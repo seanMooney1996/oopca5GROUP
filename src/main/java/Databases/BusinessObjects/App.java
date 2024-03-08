@@ -17,9 +17,6 @@ package Databases.BusinessObjects;
  * to create the required MySQL user_database and User table.
  */
 
-import Databases.DTOs.User;
-import Databases.Daos.MySqlUserDao;
-import Databases.Daos.UserDAOInterface;
 import Databases.Exceptions.DaoException;
 
 import java.util.List;

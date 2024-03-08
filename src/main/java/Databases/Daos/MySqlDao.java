@@ -8,11 +8,11 @@ import java.sql.SQLException;
 import java.sql.SQLOutput;
 
 public class MySqlDao {
-
+    //-- Main Author: Sean Mooney
     public Connection getConnection() throws DaoException
     {
         String driver = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql://localhost:3306/user_database";
+        String url = "jdbc:mysql://localhost:3306/hollywood_database";
         String username = "root";
         String password = "";
         Connection connection = null;
@@ -35,7 +35,7 @@ public class MySqlDao {
         return connection;
     }
 
-
+    //-- Main Author: Sean Mooney
     public void freeConnection(Connection connection)throws DaoException{
         try {
             if (connection != null) {
