@@ -32,9 +32,6 @@ public class App
     }
 
 
-
-
-
     //author: Noah Krobot
     public static void runTheApplication() throws DaoException {
         System.out.println("Enter a number to run an action:");
