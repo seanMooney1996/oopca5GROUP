@@ -132,6 +132,8 @@ public class App
 
 
 
+
+    //author: Noah Krobot
     public static void runTheApplication() throws DaoException {
         System.out.println("Enter a number to run an action:");
         System.out.println("\t(1) Get All Movies");
@@ -197,6 +199,7 @@ public class App
         }
     }
 
+    //author: Noah Krobot
     public static int validInt(){
         Scanner keyValid = new Scanner(System.in);
         boolean runWhile= true;
@@ -221,6 +224,7 @@ public class App
         return choice;
     }
 
+    //author: Noah Krobot
     public static float validFloat(){
         Scanner keyValid2 = new Scanner(System.in);
         boolean runWhile= true;

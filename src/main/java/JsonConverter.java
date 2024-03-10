@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import java.util.List;
 import java.util.Scanner;
 
+//author: Noah Krobot
 public class JsonConverter {
     static MovieDAOInterface movieDao = new MySqlMovieDao();
     static Scanner key = new Scanner(System.in);
