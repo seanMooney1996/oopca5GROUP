@@ -12,7 +12,7 @@ public interface MovieDAOInterface {
     public Movie findMovieByName(String name) throws DaoException;
     int deleteMovieByName(String name) throws DaoException;
 
-    public Movie addMovie(String name, String directorName, String genre, String studio, int year, float boxOfficeGain) throws DaoException;
-
     public Movie createMovie(Movie movie) throws DaoException;
+
+    public Movie updateMovie(int id, Movie movie) throws DaoException;
 }

@@ -38,8 +38,8 @@ public class App
         System.out.println("\t(1) Get All Movies");
         System.out.println("\t(2) Get Movies By Id");
         System.out.println("\t(3) Delete Movies By Id");
-        System.out.println("\t(4) Add a player");
-        System.out.println("\t(5) Update a player by Id");
+        System.out.println("\t(4) Add a Movie");
+        System.out.println("\t(5) Update a movie by Id");
         System.out.println("\t(6) Find players using filter");
 
         int choice = validInt();
@@ -85,7 +85,8 @@ public class App
                 System.out.println("Please, enter movie box office gain: ");
                 float boxOfficeGain = validFloat();
 
-                Movie usersMovie = movieDao.addMovie(name, directorName, genre, studio, year, boxOfficeGain);
+                Movie m = new Movie(name,directorName,genre,studio,year,boxOfficeGain);
+                Movie usersMovie = movieDao.createMovie(m);
                 System.out.println("Movie you searched: " + usersMovie.toString());
                 break;
             }
