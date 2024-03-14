@@ -11,12 +11,19 @@ import java.util.List;
 //-- Main Author: Sean Mooney
 public class MySqlMovieDaoTest extends TestCase {
     private final MySqlMovieDao mySqlMovieDao = new MySqlMovieDao();
-
+    
 
     public void testGetAllMovies() throws DaoException {
         List<Movie> movieList = new ArrayList<>();
         movieList =   mySqlMovieDao.getAllMovies();
         assertFalse(movieList.isEmpty());
+    }
+
+    public void testCreateMovie() throws DaoException {
+       Movie m = new Movie("Dunkirk");
+        Movie mReturn = mySqlMovieDao.createMovie(m);
+        mySqlMovieDao.deleteMovieByName("Dunkirk"); // delete afterwards
+        assertEquals(mReturn.getMovieName(),m.getMovieName());
     }
 
     public void testFindMovieByNameFindDune() throws DaoException {
@@ -43,6 +50,7 @@ public class MySqlMovieDaoTest extends TestCase {
     public void testAddMovie() throws DaoException {
         Movie movie = mySqlMovieDao.addMovie("Dune: Part One","Denis Villenueve","Sci-Fi","Warner Bros. Picture",2021,434.8f);
         Movie newMovie = new Movie("Dune: Part One");
+        mySqlMovieDao.deleteMovieByName("Dune: Part One");
         assertEquals(movie,newMovie);
     }
 }

@@ -9,6 +9,44 @@ import java.util.List;
 
 //-- Main Author: Sean Mooney
 public class MySqlMovieDao  extends MySqlDao implements MovieDAOInterface{
+    @Override
+    public Movie createMovie(Movie movie) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        Movie createdMovie = null;
+
+        try {
+            connection = this.getConnection();
+            String query = "INSERT INTO movies (MOVIE_NAME, DIRECTOR_NAME, GENRE, STUDIO, YEAR, BOXOFFICE_GAIN) VALUES (?, ?, ?, ?, ?, ?)";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, movie.getMovieName());
+            statement.setString(2, movie.getDirectorName());
+            statement.setString(3, movie.getGenre());
+            statement.setString(4, movie.getStudio());
+            statement.setInt(5, movie.getYear());
+            statement.setFloat(6, movie.getBoxOfficeGain());
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                createdMovie = findMovieByName(movie.getMovieName());
+            }
+        } catch (SQLException e) {
+            throw new DaoException(" createMovie() Error creating movie: " + e.getMessage());
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return createdMovie; // returns null if there is a failure in creating the entry
+    }
 
     @Override
     public List<Movie> getAllMovies() throws DaoException
@@ -140,7 +178,7 @@ public class MySqlMovieDao  extends MySqlDao implements MovieDAOInterface{
             preparedStatement.setString( 1, name );
 
             //Using a PreparedStatement to execute SQL...
-            int result = preparedStatement.executeUpdate();
+            numberOfDeletedRows = preparedStatement.executeUpdate();
 
         } catch (SQLException e)
         {
@@ -208,7 +246,7 @@ public class MySqlMovieDao  extends MySqlDao implements MovieDAOInterface{
 
 
 
-        String selectQuery = "SELECT * FROM MOVIES WHERE USER_ID - ?";
+        String selectQuery = "SELECT * FROM MOVIES WHERE MOVIE_ID - ?";
 
         try (Connection connection = this.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectQuery) ) {
@@ -230,7 +268,7 @@ public class MySqlMovieDao  extends MySqlDao implements MovieDAOInterface{
             }
         }catch(SQLException e)
         {
-            throw new DaoException("MYSqlUserDao: registerUser() (retrieving user row) " + e.getLocalizedMessage());
+            throw new DaoException("MYSqlMovieDao: addMovie() (retrieving movie row) " + e.getLocalizedMessage());
         }
         return movie;
     }

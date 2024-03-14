@@ -14,4 +14,5 @@ public interface MovieDAOInterface {
 
     public Movie addMovie(String name, String directorName, String genre, String studio, int year, float boxOfficeGain) throws DaoException;
 
+    public Movie createMovie(Movie movie) throws DaoException;
 }
