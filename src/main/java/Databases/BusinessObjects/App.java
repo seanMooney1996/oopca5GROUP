@@ -22,6 +22,7 @@ import Databases.Daos.MovieDAOInterface;
 import Databases.Daos.MySqlMovieDao;
 import Databases.Exceptions.DaoException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -92,10 +93,30 @@ public class App
             }
             case 5:{
                 System.out.println("5");
-            };
+
+                List<Movie> movies = movieDao.getAllMovies();
+                ArrayList<Integer> movieIDS =  new ArrayList<>();
+
+                int increment = 1;
+                for(Movie m: movies){
+                    System.out.println("("+increment+ ") "+m);
+                    movieIDS.add(m.getId());
+                    increment++;
+                }
+
+                int userInputIndex = validIntEDIT(movies);
+                userInputIndex--;
+                    int idFromList = movies.get(userInputIndex).getId();
+                    Movie movieToBePassed = movies.get(userInputIndex);
+                    Movie updatedMovie =  movieDao.updateMovie(idFromList, movieToBePassed);
+                    System.out.println(updatedMovie);
+
+                break;
+            }
             case 6:{
                 System.out.println("6");
-            };
+                break;
+            }
         }
     }
 
@@ -123,6 +144,40 @@ public class App
         }
         return choice;
     }
+
+    public static int validIntEDIT(List<Movie> movies){
+        Scanner keyValid = new Scanner(System.in);
+        boolean runWhile= true;
+        int userInputIndex = 0;
+
+        while(runWhile){
+            System.out.println("\nEnter your choice:");
+
+            if(keyValid.hasNextInt() ){
+                userInputIndex = keyValid.nextInt();
+
+                if(userInputIndex> movies.size()){
+                    System.out.println("Invalid id.");
+                }else{
+                    runWhile=false;
+
+                }
+
+            }else{
+                System.out.println("Please, enter an integer value.");
+                keyValid.next();
+            }
+        }
+        return userInputIndex;
+    }
+
+
+
+
+
+
+
+
 
     //author: Noah Krobot
     public static float validFloat(){
