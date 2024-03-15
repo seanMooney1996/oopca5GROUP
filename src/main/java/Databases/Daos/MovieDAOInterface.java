@@ -1,5 +1,6 @@
 package Databases.Daos;
 
+import Databases.DTOs.MovieComparator;
 import Databases.Exceptions.DaoException;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface MovieDAOInterface {
     public Movie createMovie(Movie movie) throws DaoException;
 
     public Movie updateMovie(int id, Movie movie) throws DaoException;
+
+    public List<Movie> getMoviesByFilter(MovieComparator movieComparator) throws DaoException;
 }
