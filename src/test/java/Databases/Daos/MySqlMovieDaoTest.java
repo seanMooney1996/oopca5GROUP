@@ -1,6 +1,7 @@
 package Databases.Daos;
 
 import Databases.DTOs.Movie;
+import Databases.DTOs.MovieComparator;
 import Databases.Exceptions.DaoException;
 import junit.framework.TestCase;
 
@@ -68,5 +69,11 @@ public class MySqlMovieDaoTest extends TestCase {
         } finally {
             mySqlMovieDao.updateMovie(originalMovie.getId(), originalMovie);
         }
+    }
+
+    public void testGetMoviesByFilter() throws DaoException {
+        List<Movie> movieList = new ArrayList<>();
+        movieList = mySqlMovieDao.getMoviesByFilter(new MovieComparator("GENRE","Sci-Fi"));
+        assertFalse(movieList.isEmpty());
     }
 }

@@ -1,14 +1,78 @@
 package Databases.Daos;
 
 import Databases.DTOs.Movie;
+import Databases.DTOs.MovieComparator;
 import Databases.Exceptions.DaoException;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 //-- Main Author: Sean Mooney
 public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
+
+
+    @Override
+    public List<Movie> getMoviesByFilter(MovieComparator movieComparator) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Movie> movieList = new ArrayList<>();
+
+
+        try {
+            connection = this.getConnection();
+            String  query = "";
+
+            String compareBy = movieComparator.getCompareBy();
+            if (movieComparator.getCompareType().equals("String")){
+                query = "SELECT * FROM MOVIES WHERE "+movieComparator.getCompareBy()+" = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, movieComparator.getCompareToString());
+            } else if (movieComparator.getCompareType().equals("Integer")) {
+                query = "SELECT * FROM MOVIES WHERE "+movieComparator.getCompareBy()+" = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, movieComparator.getCompareToInt());
+            } else if (movieComparator.getCompareType().equals("Float")){
+                query = "SELECT * FROM MOVIES WHERE "+movieComparator.getCompareBy()+" = ?";
+                preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setFloat(1, movieComparator.getCompareToFloat());
+            }
+
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int movieId = resultSet.getInt("MOVIE_ID");
+                String movieName = resultSet.getString("MOVIE_NAME");
+                String directorName = resultSet.getString("DIRECTOR_NAME");
+                String genre = resultSet.getString("GENRE");
+                String studio = resultSet.getString("STUDIO");
+                int year = resultSet.getInt("YEAR");
+                float boxOfficeGain = resultSet.getFloat("BOXOFFICE_GAIN");
+
+                Movie m = new Movie(movieId, movieName, directorName, genre, studio, year, boxOfficeGain);
+                movieList.add(m);
+            }
+        } catch (SQLException e) {
+            throw new DaoException(" getMoviesByFilter() exception " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException(" getMoviesByFilter() " + e.getMessage());
+            }
+        }
+        return movieList;     // may be empty
+    }
+
 
     @Override
     public Movie updateMovie(int id, Movie movie) throws DaoException {
@@ -52,12 +116,6 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
 
         return updatedMovie;
     }
-
-
-
-
-
-
 
     @Override
     public Movie createMovie(Movie movie) throws DaoException {
