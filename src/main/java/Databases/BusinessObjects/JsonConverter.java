@@ -1,3 +1,5 @@
+package Databases.BusinessObjects;
+
 import Databases.DTOs.Movie;
 import Databases.Daos.MovieDAOInterface;
 import Databases.Daos.MySqlMovieDao;

@@ -46,16 +46,24 @@ public class App
         int choice = validInt();
         String message = "";
         MovieDAOInterface movieDao = new MySqlMovieDao();
+        movieDao = new MySqlMovieDao();
+
+
+
         Scanner key = new Scanner (System.in);
         switch (choice){
             case 1:{
                 message = "1";
-                List<Movie> movies = movieDao.getAllMovies();
-                System.out.println("movies: " + movies);
+                System.out.println("\n\n*** getAllMovies ***");
+                JsonConverter.converteAllMoviesToJSON();
+//                List<Movie> movies = movieDao.getAllMovies();
+//                System.out.println("movies: " + movies);
                 break;
             }
             case 2:{
                 message = "2";
+                System.out.println("\n\n*** findMovieByName ***");
+
                 System.out.println("Please, enter movie name: ");
                 String input = key.next();
                 Movie usersMovie = movieDao.findMovieByName(input);
@@ -64,6 +72,8 @@ public class App
             }
             case 3:{
                 message = "3";
+                System.out.println("\n\n*** deleteMovieByName ***");
+
                 System.out.println("Please, enter movie name: ");
                 String input = key.next();
                 int numberOfDeletedRows = movieDao.deleteMovieByName(input);
@@ -72,6 +82,8 @@ public class App
             }
             case 4:{
                 message = "4";
+                System.out.println("\n\n*** createMovie ***");
+
 
                 System.out.println("Please, enter movie name: ");
                 String name = key.next();
@@ -92,8 +104,8 @@ public class App
                 break;
             }
             case 5:{
-                System.out.println("5");
-
+                System.out.println("\n\n*** updateMovie ***");
+                System.out.println("\n --- list of all movies: ");
                 List<Movie> movies = movieDao.getAllMovies();
                 ArrayList<Integer> movieIDS =  new ArrayList<>();
 
