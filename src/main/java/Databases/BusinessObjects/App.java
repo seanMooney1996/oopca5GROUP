@@ -56,7 +56,8 @@ public class App
             case 1:{
                 message = "1";
                 System.out.println("\n\n*** getAllMovies ***");
-                JsonConverter.converteAllMoviesToJSON();
+                String result = JsonConverter.converteAllMoviesToJSON();
+                System.out.println(result);
 //                List<Movie> movies = movieDao.getAllMovies();
 //                System.out.println("movies: " + movies);
                 break;
