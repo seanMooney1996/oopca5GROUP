@@ -240,14 +240,6 @@ public class App
                     }
 
                 }
-
-
-
-
-
-
-
-
                 break;
             }
         }
