@@ -10,23 +10,24 @@ import java.util.List;
 import java.util.Scanner;
 
 //author: Noah Krobot
+//Modifications: Mariela Machuca Palmeros
 public class JsonConverter {
     static MovieDAOInterface movieDao = new MySqlMovieDao();
     static Scanner key = new Scanner(System.in);
-    public static String converteAllMoviesToJSON() throws DaoException {
+    public static String converteAllMoviesToJSON(List<Movie> movies) throws DaoException {
         Gson gsonParser = new Gson();
 
-        List<Movie> movies = movieDao.getAllMovies();
+        //List<Movie> movies = movieDao.getAllMovies();
         String jsonString = gsonParser.toJson(movies);
 //        System.out.println("All movies JSON: \n"+jsonString);
 
         return jsonString;
     }
 
-    public static String converteSingleToJSON() throws DaoException {
+    public static String convertSingleToJSON(String input) throws DaoException {
         Gson gsonParser = new Gson();
 
-        String input = key.next();
+      //  String input = key.next();
         Movie usersMovie = movieDao.findMovieByName(input);
         String jsonStringOneMovie = gsonParser.toJson(usersMovie);
 //        System.out.println("Single movie JSON: \n"+jsonStringOneMovie);
