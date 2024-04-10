@@ -11,6 +11,8 @@ public interface MovieDAOInterface {
     public List<Movie> getAllMovies() throws DaoException;
 
     public Movie findMovieByName(String name) throws DaoException;
+    public Movie findMovieById(int id) throws DaoException;
+
     int deleteMovieByName(String name) throws DaoException;
 
     public Movie createMovie(Movie movie) throws DaoException;

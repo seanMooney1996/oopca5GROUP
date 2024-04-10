@@ -65,11 +65,11 @@ public class App
             }
             case 2:{
                 message = "2";
-                System.out.println("\n\n*** findMovieByName ***");
+                System.out.println("\n\n*** findMovieById ***");
 
-                System.out.println("Please, enter movie name: ");
-                String input = key.next();
-                Movie usersMovie = movieDao.findMovieByName(input);
+                System.out.println("Please, enter movie id: ");
+                int input = key.nextInt();
+                Movie usersMovie = movieDao.findMovieById(input);
                 System.out.println("Movie you searched: " + usersMovie.toString());
                 break;
             }

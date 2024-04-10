@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class JsonConverter {
     static MovieDAOInterface movieDao = new MySqlMovieDao();
     static Scanner key = new Scanner(System.in);
-    public static String converteAllMoviesToJSON(List<Movie> movies) throws DaoException {
+    public String converteAllMoviesToJSON(List<Movie> movies) throws DaoException {
         Gson gsonParser = new Gson();
 
         //List<Movie> movies = movieDao.getAllMovies();
@@ -23,17 +23,11 @@ public class JsonConverter {
 
         return jsonString;
     }
-
-    public static String convertSingleToJSON(String input) throws DaoException {
+    public String convertSingleToJSON(Movie m) throws DaoException {
         Gson gsonParser = new Gson();
-
-      //  String input = key.next();
-        Movie usersMovie = movieDao.findMovieByName(input);
-        String jsonStringOneMovie = gsonParser.toJson(usersMovie);
-//        System.out.println("Single movie JSON: \n"+jsonStringOneMovie);
+        String jsonStringOneMovie = gsonParser.toJson(m);
         return jsonStringOneMovie;
     }
-
 }
 
 
