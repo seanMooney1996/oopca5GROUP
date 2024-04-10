@@ -16,6 +16,8 @@ import java.util.List;
 import  Databases.BusinessObjects.JsonConverter;
 import com.google.gson.Gson;
 
+
+//-- Main Author: Sean Mooney
 public class Server {
 
     final int SERVER_PORT_NUMBER = 8888;  // could be any port from 1024 to 49151 (that doesn't clash with other Apps)
@@ -109,36 +111,53 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
             while ((request = socketReader.readLine()) != null) {
                 System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + request);
 
-                // Implement our PROTOCOL
-                // The protocol is the logic that determines the responses given based on requests received.
-                //
                 if (request.startsWith("getMovieByID"))
                 {
                     Movie m = mySqlMovieDao.findMovieById(Integer.parseInt(request.substring(13)));
-                    String movieString = jsonConverter.convertSingleToJSON(m);
-                    socketWriter.println(movieString);
-                    System.out.println("Server message: movie sent to client");
+
+                    if (m != null){
+                        String movieString = jsonConverter.convertSingleToJSON(m);
+                        socketWriter.println(movieString);
+                        System.out.println("Server message: movie sent to client");
+                    } else {
+                        socketWriter.println("Error retrieving movie from DB");
+                        System.out.println("Server message: error retrieving movie from db");
+                    }
+
                 } else if (request.startsWith("getAllMovies")) {
                     List<Movie> movieList = mySqlMovieDao.getAllMovies();
-                    String moviesJson = jsonConverter.converteAllMoviesToJSON(movieList);
-                    socketWriter.println(moviesJson);
-                    System.out.println("Server message: Sending all movies to client.");
+                    if (!movieList.isEmpty()){
+                        String moviesJson = jsonConverter.converteAllMoviesToJSON(movieList);
+                        socketWriter.println(moviesJson);
+                        System.out.println("Server message: Sending all movies to client.");
+                    } else {
+                        socketWriter.println("Error getting movies");
+                        System.out.println("Server message: Error Sending all movies to client.");
+                    }
+
                 }  else if (request.startsWith("addMovie")) {
                     Gson gsonParser = new Gson();
                     String jsonString = request.substring(9);
                     Movie m = gsonParser.fromJson( jsonString, Movie.class );
-                    mySqlMovieDao.createMovie(m);
-                    socketWriter.println("Movie added to database");
-                    System.out.println("Server message: Sending all movies to client.");
+                    if (mySqlMovieDao.createMovie(m) == null){
+                        socketWriter.println("Movie not added to database");
+                        System.out.println("Server message: Error adding movie to DB.");
+                    } else {
+                        socketWriter.println("Movie added to database");
+                        System.out.println("Server message: Movie added to db.");
+                    }
                 }
-//                else if (request.startsWith("deleteMovie")) {
-//                    Gson gsonParser = new Gson();
-//                    String jsonString = request.substring(9);
-//                    Movie m = gsonParser.fromJson( jsonString, Movie.class );
-//                    mySqlMovieDao.createMovie(m);
-//                    socketWriter.println("Movie added to database");
-//                    System.out.println("Server message: Sending all movies to client.");
-//                }
+                else if (request.startsWith("deleteMovie")) {
+                    int movieId = Integer.parseInt(request.substring(12));
+                   int deletedRows = mySqlMovieDao.deleteMovie(movieId);
+                   if (deletedRows==0){
+                       socketWriter.println("Error deleting from database");
+                       System.out.println("Server message: Error deleting Movie from database");
+                   } else {
+                       socketWriter.println("Movie deleted from database");
+                       System.out.println("Server message: Movie deleted from database");
+                   }
+                }
                 else if (request.startsWith("quit"))
                 {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");

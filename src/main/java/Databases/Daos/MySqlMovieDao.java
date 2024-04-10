@@ -294,7 +294,7 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
     }
 
     @Override
-    public int deleteMovieByName(String name) throws DaoException {
+    public int deleteMovie(int id) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -305,9 +305,9 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
             // from the super class (MySqlDao.java)
             connection = this.getConnection();
 
-            String query = "DELETE FROM MOVIES WHERE MOVIE_NAME = ? ";
+            String query = "DELETE FROM MOVIES WHERE MOVIE_ID = ? ";
             preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, name);
+            preparedStatement.setInt(1, id);
 
             //Using a PreparedStatement to execute SQL...
             numberOfDeletedRows = preparedStatement.executeUpdate();
