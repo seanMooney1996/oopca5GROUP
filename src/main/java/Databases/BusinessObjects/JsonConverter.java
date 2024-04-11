@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class JsonConverter {
     static MovieDAOInterface movieDao = new MySqlMovieDao();
     static Scanner key = new Scanner(System.in);
-    public String converteAllMoviesToJSON(List<Movie> movies) throws DaoException {
+    public static String converteAllMoviesToJSON(List<Movie> movies) throws DaoException {
         Gson gsonParser = new Gson();
 
         //List<Movie> movies = movieDao.getAllMovies();

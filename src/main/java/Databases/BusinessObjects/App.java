@@ -35,7 +35,7 @@ public class App
 
 
     //author: Noah Krobot
-    public static void runTheApplication() throws DaoException {
+     static void runTheApplication() throws DaoException {
         System.out.println("Enter a number to run an action:");
         System.out.println("\t(1) Get All Movies");
         System.out.println("\t(2) Get Movies By Id");
@@ -77,9 +77,9 @@ public class App
                 message = "3";
                 System.out.println("\n\n*** deleteMovieByName ***");
 
-                System.out.println("Please, enter movie name: ");
-                String input = key.next();
-                int numberOfDeletedRows = movieDao.deleteMovieByName(input);
+                System.out.println("Please, enter movie id: ");
+                int input = key.nextInt();
+                int numberOfDeletedRows = movieDao.deleteMovie(input);
                 System.out.println("Number of rows you've deleted: " + numberOfDeletedRows);
                 break;
             }
