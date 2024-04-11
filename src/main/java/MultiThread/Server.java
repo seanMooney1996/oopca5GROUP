@@ -1,4 +1,4 @@
-package Server;
+package MultiThread;
 
 
 import Databases.DTOs.Movie;
@@ -154,7 +154,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
                        socketWriter.println("Error deleting from database");
                        System.out.println("Server message: Error deleting Movie from database");
                    } else {
-                       socketWriter.println("Movie deleted from database");
+                       socketWriter.println("Movie Deleted from database");
                        System.out.println("Server message: Movie deleted from database");
                    }
                 }
