@@ -137,7 +137,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
 
                 }  else if (request.startsWith("addMovie")) {
                     Gson gsonParser = new Gson();
-                    String jsonString = request.substring(9);
+                    String jsonString = request.substring(8);
                     Movie m = gsonParser.fromJson( jsonString, Movie.class );
                     if (mySqlMovieDao.createMovie(m) == null){
                         socketWriter.println("Movie not added to database");
