@@ -5,15 +5,12 @@ import Databases.DTOs.Movie;
 import Databases.Daos.MySqlMovieDao;
 import Databases.Exceptions.DaoException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
-import  Databases.BusinessObjects.JsonConverter;
+import Databases.BusinessObjects.JsonConverter;
 import com.google.gson.Gson;
 
 
@@ -29,8 +26,8 @@ public class Server {
 
     public void start() {
 
-        ServerSocket serverSocket =null;
-        Socket clientSocket =null;
+        ServerSocket serverSocket = null;
+        Socket clientSocket = null;
 
         try {
             serverSocket = new ServerSocket(SERVER_PORT_NUMBER);
@@ -58,16 +55,15 @@ public class Server {
             }
         } catch (IOException ex) {
             System.out.println(ex);
-        }
-        finally{
+        } finally {
             try {
-                if(clientSocket!=null)
+                if (clientSocket != null)
                     clientSocket.close();
             } catch (IOException e) {
                 System.out.println(e);
             }
             try {
-                if(serverSocket!=null)
+                if (serverSocket != null)
                     serverSocket.close();
             } catch (IOException e) {
                 System.out.println(e);
@@ -84,6 +80,11 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
     PrintWriter socketWriter;
     Socket clientSocket;
     final int clientNumber;
+
+    private DataOutputStream dataOutputStream = null;
+    private DataInputStream dataInputStream = null;
+
+    private String[] moviePosterFileNames = {"Images_Server/BladeRunnerServer.jpeg", "/Images_Server/DunePosterServer.jpeg", "/Images_Server/PoorThingsPosterServer.jpeg"};
 
     // Constructor
     public ClientHandler(Socket clientSocket, int clientNumber) {
@@ -111,11 +112,10 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
             while ((request = socketReader.readLine()) != null) {
                 System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + request);
 
-                if (request.startsWith("getMovieByID"))
-                {
+                if (request.startsWith("getMovieByID")) {
                     Movie m = mySqlMovieDao.findMovieById(Integer.parseInt(request.substring(13)));
 
-                    if (m != null){
+                    if (m != null) {
                         String movieString = jsonConverter.convertSingleToJSON(m);
                         socketWriter.println(movieString);
                         System.out.println("Server message: movie sent to client");
@@ -126,7 +126,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
 
                 } else if (request.startsWith("getAllMovies")) {
                     List<Movie> movieList = mySqlMovieDao.getAllMovies();
-                    if (!movieList.isEmpty()){
+                    if (!movieList.isEmpty()) {
                         String moviesJson = jsonConverter.converteAllMoviesToJSON(movieList);
                         socketWriter.println(moviesJson);
                         System.out.println("Server message: Sending all movies to client.");
@@ -135,42 +135,51 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
                         System.out.println("Server message: Error Sending all movies to client.");
                     }
 
-                }  else if (request.startsWith("addMovie")) {
+
+                } else if (request.startsWith("getPosterList")) {
+                    socketWriter.println("Poster list: \n1.Blade Runner \n2.Dune \n3.Poor Things");
+
+                } else if (request.startsWith("getPosterImage")) {
+                    socketWriter.println("Poster list: \n1.Blade Runner \n2.Dune \n3.Poor Things");
+                    int getFileNumber = Integer.parseInt(request.substring(15)) - 1;
+
+                    String fileToGet = moviePosterFileNames[getFileNumber];
+                    
+                    sendFile(fileToGet);
+
+                } else if (request.startsWith("addMovie")) {
                     Gson gsonParser = new Gson();
                     String jsonString = request.substring(8);
-                    Movie m = gsonParser.fromJson( jsonString, Movie.class );
-                    if (mySqlMovieDao.createMovie(m) == null){
+                    Movie m = gsonParser.fromJson(jsonString, Movie.class);
+                    if (mySqlMovieDao.createMovie(m) == null) {
                         socketWriter.println("Movie not added to database");
                         System.out.println("Server message: Error adding movie to DB.");
                     } else {
                         socketWriter.println("Movie added to database");
                         System.out.println("Server message: Movie added to db.");
                     }
-                }
-                else if (request.startsWith("deleteMovie")) {
+                } else if (request.startsWith("deleteMovie")) {
                     int movieId = Integer.parseInt(request.substring(12));
-                   int deletedRows = mySqlMovieDao.deleteMovie(movieId);
-                   if (deletedRows==0){
-                       socketWriter.println("Error deleting from database");
-                       System.out.println("Server message: Error deleting Movie from database");
-                   } else {
-                       socketWriter.println("Movie Deleted from database");
-                       System.out.println("Server message: Movie deleted from database");
-                   }
-                }
-                else if (request.startsWith("quit"))
-                {
+                    int deletedRows = mySqlMovieDao.deleteMovie(movieId);
+                    if (deletedRows == 0) {
+                        socketWriter.println("Error deleting from database");
+                        System.out.println("Server message: Error deleting Movie from database");
+                    } else {
+                        socketWriter.println("Movie Deleted from database");
+                        System.out.println("Server message: Movie deleted from database");
+                    }
+
+                } else if (request.startsWith("quit")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
-                }
-                else{
+                } else {
                     socketWriter.println("error I'm sorry I don't understand your request");
                     System.out.println("Server message: Invalid request from client.");
                 }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
-        } catch (DaoException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             this.socketWriter.close();
@@ -182,6 +191,28 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
             }
         }
         System.out.println("Server: (ClientHandler): Handler for Client " + clientNumber + " is terminating .....");
+    }
+
+    private void sendFile(String path) throws Exception {
+        int bytes = 0;
+        // Open the File at the specified location (path)
+        File file = new File(path);
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        // send the length (in bytes) of the file to the server
+        dataOutputStream.writeLong(file.length());
+
+        // Here we break file into chunks
+        byte[] buffer = new byte[4 * 1024]; // 4 kilobyte buffer
+
+        // read bytes from file into the buffer until buffer is full or we reached end of file
+        while ((bytes = fileInputStream.read(buffer)) != -1) {
+            // Send the buffer contents to Server Socket, along with the count of the number of bytes
+            dataOutputStream.write(buffer, 0, bytes);
+            dataOutputStream.flush();   // force the data into the stream
+        }
+        // close the file
+        fileInputStream.close();
     }
 }
 
