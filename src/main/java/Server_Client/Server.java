@@ -43,7 +43,6 @@ public class Server {
                 System.out.println("Server: Client " + clientNumber + " has connected.");
                 System.out.println("Server: Port number of remote client: " + clientSocket.getPort());
                 System.out.println("Server: Port number of the socket used to talk with client " + clientSocket.getLocalPort());
-
                 // create a new ClientHandler for the requesting client, passing in the socket and client number,
                 // pass the handler into a new thread, and start the handler running in the thread.
                 Thread t = new Thread(new ClientHandler(clientSocket, clientNumber));
@@ -84,12 +83,14 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
     private DataOutputStream dataOutputStream = null;
     private DataInputStream dataInputStream = null;
 
-    private final String[] moviePosterFileNames = {"Images_Server/BladeRunnerServer.jpeg", "/Images_Server/DunePosterServer.jpeg", "/Images_Server/PoorThingsPosterServer.jpeg"};
+    private final String[] moviePosterFileNames = {"Images_Server/BladeRunnerServer.jpg", "Images_Server/DunePosterServer.jpg", "Images_Server/PoorThingsPosterServer.jpg"};
 
     // Constructor
-    public ClientHandler(Socket clientSocket, int clientNumber) {
+    public ClientHandler(Socket clientSocket, int clientNumber) throws IOException {
         this.clientSocket = clientSocket;  // store socket for closing later
         this.clientNumber = clientNumber;  // ID number that we are assigning to this client
+        this.dataInputStream = new DataInputStream(clientSocket.getInputStream());
+        this.dataOutputStream = new DataOutputStream( clientSocket.getOutputStream());
         try {
             // assign to fields
             this.socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -122,7 +123,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
                         handleGetPosterList();
                         break;
                     case "getPosterImage":
-                        handleGetPosterImage(request);
+                        handleGetPosterImage();
                         break;
                     case "addMovie":
                         handleAddMovie(mySqlMovieDao);
@@ -175,14 +176,34 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
         socketWriter.println("Poster list : 1.Blade Runner 2.Dune 3.Poor things");
     }
 
-    private void handleGetPosterImage(String request) throws Exception {
-        if (request.length()>=15) {
-            int getFileNumber = Integer.parseInt(request.substring(15)) - 1;
-            String fileToGet = moviePosterFileNames[getFileNumber];
-            sendFile(fileToGet);
-        } else {
-            socketWriter.println("Invalid request for file");
+    private void handleGetPosterImage() throws Exception {
+        socketWriter.println("Enter a poster number");
+         String request = socketReader.readLine();
+        int fileNumber = Integer.parseInt(request) - 1;
+        System.out.println("FILE NUMBER "+fileNumber);
+            if (Integer.parseInt(request)>-1 && Integer.parseInt(request)<20) {
+                String fileToGet = moviePosterFileNames[fileNumber];
+                socketWriter.println(fileToGet.substring(14));
+                sendFile(fileToGet);
+            } else {
+                socketWriter.println("Invalid request for file");
+            }
+    }
+
+    private void sendFile(String path) throws Exception {
+        int bytes = 0;
+        File file = new File(path);
+
+        System.out.println(file);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        this.dataOutputStream.writeLong(file.length());
+        byte[] buffer = new byte[4 * 1024]; // 4 kilobyte buffer
+
+        while ((bytes = fileInputStream.read(buffer)) != -1) {
+            this.dataOutputStream.write(buffer, 0, bytes);
+            this.dataOutputStream.flush();
         }
+        fileInputStream.close();
     }
 
     private void handleAddMovie(MySqlMovieDao mySqlMovieDao) throws IOException, DaoException {
@@ -228,28 +249,6 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    private void sendFile(String path) throws Exception {
-        int bytes = 0;
-        // Open the File at the specified location (path)
-        File file = new File(path);
-        FileInputStream fileInputStream = new FileInputStream(file);
-
-        // send the length (in bytes) of the file to the server
-        dataOutputStream.writeLong(file.length());
-
-        // Here we break file into chunks
-        byte[] buffer = new byte[4 * 1024]; // 4 kilobyte buffer
-
-        // read bytes from file into the buffer until buffer is full or we reached end of file
-        while ((bytes = fileInputStream.read(buffer)) != -1) {
-            // Send the buffer contents to Server Socket, along with the count of the number of bytes
-            dataOutputStream.write(buffer, 0, bytes);
-            dataOutputStream.flush();   // force the data into the stream
-        }
-        // close the file
-        fileInputStream.close();
     }
 }
 
