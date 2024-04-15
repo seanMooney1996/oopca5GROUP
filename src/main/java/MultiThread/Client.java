@@ -29,17 +29,17 @@ public class Client {
             System.out.println("Client message: The Client is running and has connected to the server");
             //ask user to enter a command
             Scanner consoleInput = new Scanner(System.in);
-            System.out.println("Valid commands are: \"getMovieByID\" to get a movie, \"deleteMovie\" to delete a movie, \"addMovie\" to delete a movie, or \"getAllMovies\" to display all the movies, \"quit\"");
+            System.out.println("Valid commands are: \"getMovieByID\" to get a movie, \"deleteMovie\" to delete a movie, \"getPosterList\" to delete a movie," +
+                    " \"addMovie\" to delete a movie, or \"getAllMovies\" to display all the movies, \"quit\"");
             System.out.println("Please enter a command: ");
             String userRequest = consoleInput.nextLine();
 
-            while(true) {
+            while (true) {
                 // send the command to the server on the socket
-
-                if(userRequest.startsWith("addMovie")){
+                if (userRequest.startsWith("addMovie")) {
                     Gson gsonParser = new Gson();
-                   String movieName;
-                   String directorName;
+                    String movieName;
+                    String directorName;
                     String Genre;
                     String studioName;
                     int year;
@@ -63,8 +63,10 @@ public class Client {
                     String jsonMovie = gsonParser.toJson(newMovie);
                     userRequest += jsonMovie;
                     out.println(userRequest);
-                }
-                else {
+                } else if (userRequest.startsWith("getPosterList")) {
+                    out.println(userRequest);
+
+                } else {
                     out.println(userRequest);      // write the request to socket along with a newline terminator (which is required)
                     // out.flush();                      // flushing buffer NOT necessary as auto flush is set to true
 
@@ -93,8 +95,6 @@ public class Client {
                 }
 
                 consoleInput = new Scanner(System.in);
-                System.out.println("Valid commands are: \"time\" to get time, or \"echo <message>\" to get message echoed back, \"quit\"");
-                System.out.println("Please enter a command: ");
                 userRequest = consoleInput.nextLine();
             }
         } catch (IOException e) {

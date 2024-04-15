@@ -74,7 +74,7 @@ public void testConverteSingleToJSON() throws DaoException {
         Movie movie = mySqlMovieDao.findMovieByName("Dune: Part One");
         String movieName = movie.getMovieName();
         Movie exampMovie = new Movie(1, "Dune: Part One", "Denis Villenueve", "Sci-Fi", "Warner Bros. Picture", 2021, 434.8F);
-        String outPutMovie = JsonConverter.convertSingleToJSON(movieName);
+        String outPutMovie = JsonConverter.convertSingleToJSON(exampMovie);
         String expectedMovie = gsonParser.toJson(exampMovie);
         assertEquals(outPutMovie, expectedMovie);
         /*

@@ -144,7 +144,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
                     int getFileNumber = Integer.parseInt(request.substring(15)) - 1;
 
                     String fileToGet = moviePosterFileNames[getFileNumber];
-                    
+
                     sendFile(fileToGet);
 
                 } else if (request.startsWith("addMovie")) {

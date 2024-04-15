@@ -20,4 +20,6 @@ public interface MovieDAOInterface {
     public Movie updateMovie(int id, Movie movie) throws DaoException;
 
     public List<Movie> getMoviesByFilter(MovieComparator movieComparator) throws DaoException;
+
+    public int deleteMovieByName(String name) throws DaoException;
 }
