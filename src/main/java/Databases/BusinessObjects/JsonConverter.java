@@ -23,7 +23,7 @@ public class JsonConverter {
 
         return jsonString;
     }
-    public String convertSingleToJSON(Movie m) throws DaoException {
+    public static String convertSingleToJSON(Movie m) throws DaoException {
         Gson gsonParser = new Gson();
         String jsonStringOneMovie = gsonParser.toJson(m);
         return jsonStringOneMovie;
