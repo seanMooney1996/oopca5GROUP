@@ -95,10 +95,11 @@ public class Client {
         sendRequest(out, "addMovie " + jsonMovie, in);
     }
 
-    private static void sendRequest(PrintWriter out, String request, BufferedReader in) throws IOException {
+    public static String sendRequest(PrintWriter out, String request, InputStream in) throws IOException {
         out.println(request);
         String response = in.readLine();
         System.out.println(response);
+        return response;
     }
     private static void sendPosterRequest(PrintWriter out, BufferedReader in) throws Exception {
         out.println("getPosterImage");
@@ -135,4 +136,6 @@ public class Client {
         System.out.println("Look in the images_Client folder to see the transferred file");
         fileOutputStream.close();
     }
+
+
 }

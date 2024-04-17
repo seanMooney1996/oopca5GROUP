@@ -219,16 +219,20 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
         }
     }
 
-    private void handleDeleteMovie(MySqlMovieDao mySqlMovieDao) throws IOException, DaoException {
+    private String handleDeleteMovie(MySqlMovieDao mySqlMovieDao) throws IOException, DaoException {
+        String message = "";
         int movieId = Integer.parseInt(socketReader.readLine().substring(12));
         int deletedRows = mySqlMovieDao.deleteMovie(movieId);
         if (deletedRows == 0) {
             socketWriter.println("Error deleting from database");
             System.out.println("Server message: Error deleting Movie from database");
+            message = "Server message: Error deleting Movie from database";
         } else {
             socketWriter.println("Movie Deleted from database");
             System.out.println("Server message: Movie deleted from database");
+            message = "Server message: Movie deleted from database";
         }
+        return message;
     }
 
     private void handleQuit() {
