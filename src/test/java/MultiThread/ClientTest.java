@@ -32,16 +32,19 @@ public class ClientTest extends TestCase {
 
     Socket socket = new Socket("localhost", 1090);
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     @Test
     public void testGetPosterList() throws IOException {
         String expected = "Poster list : 1.Blade Runner 2.Dune 3.Poor things";
         String actual = Client.sendRequest(out, "getPosterList", in);
+
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetMovieByID() throws IOException {
         String expected = "{\"id\":1,\"movieName\":\"Dune Part 1\",\"directorName\":\"Jackie Chan\",\"genre\":\"Horror\",\"studio\":\"Electra Records\",\"year\":4,\"boxOfficeGain\":4563560.0}";
+
         String actual = Client.sendRequest(out, "getMovieByID", in);
         assertEquals(expected, actual);
     }

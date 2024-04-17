@@ -95,7 +95,7 @@ public class Client {
         sendRequest(out, "addMovie " + jsonMovie, in);
     }
 
-    public static String sendRequest(PrintWriter out, String request, InputStream in) throws IOException {
+    public static String sendRequest(PrintWriter out, String request, BufferedReader in) throws IOException {
         out.println(request);
         String response = in.readLine();
         System.out.println(response);
