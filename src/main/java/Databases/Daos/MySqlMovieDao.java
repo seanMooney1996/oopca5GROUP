@@ -248,6 +248,52 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
     }
 
 
+    // method to use join on tables
+    @Override
+    public List<Movie> findMovieLikeActor(String name) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Movie movie = null;
+        List<Movie> movieList = new ArrayList<>();
+        try {
+            connection = this.getConnection();
+            String query = "SELECT * FROM  MOVIES m JOIN  actors a ON m.MOVIE_ID = a.MOVIE_ID_FK WHERE a.ACTOR_NAME LIKE ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + name + "%");
+
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int movieId = resultSet.getInt("MOVIE_ID");
+                String movieName = resultSet.getString("MOVIE_NAME");
+                String directorName = resultSet.getString("DIRECTOR_NAME");
+                String genre = resultSet.getString("GENRE");
+                String studio = resultSet.getString("STUDIO");
+                int year = resultSet.getInt("YEAR");
+                float boxOfficeGain = resultSet.getFloat("BOXOFFICE_GAIN");
+
+                Movie m = new Movie(movieId, movieName, directorName, genre, studio, year, boxOfficeGain);
+                movieList.add(m);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("findUserByUsernamePassword() " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("findMovieByName() " + e.getMessage());
+            }
+        }
+        return movieList;
+    }
     @Override
     public Movie findMovieByName(String name) throws DaoException {
         Connection connection = null;
