@@ -18,9 +18,9 @@ CREATE TABLE `movies` (
   );
 DROP TABLE IF EXISTS `actors`;
 CREATE TABLE actors (
-                         'ACTOR_ID' INT(11) NOT NULL AUTO_INCREMENT,
-                         name VARCHAR(255) NOT NULL,
-                         age INT(11) NOT NULL,
+                         ACTOR_ID INT(11) NOT NULL AUTO_INCREMENT,
+                         ACTOR_NAME VARCHAR(255) NOT NULL,
+                         ACTOR_AGE INT(11) NOT NULL,
                          MOVIE_ID_FK INT,
                          FOREIGN KEY (MOVIE_ID_FK) REFERENCES movies(MOVIE_ID),
                          PRIMARY KEY  (`ACTOR_ID`)
@@ -37,7 +37,7 @@ INSERT INTO movies VALUES (null, "Dune: Part One", "Denis Villenueve", "Sci-Fi",
             (null, "Lost in translation", "Sofia Copolla", "Romance", "Focus Features", 2003, 118.7),
             (null, "Hereditary", "Ari Aster", "Horror", "A24", 2018, 82.8);
 
-INSERT INTO actors (name, age, MOVIE_ID_FK) VALUES
+INSERT INTO actors (ACTOR_NAME, ACTOR_AGE, MOVIE_ID_FK) VALUES
                                                 ('Timothée Chalamet', 27, 1),
                                                 ('Rebecca Ferguson', 39, 1),
                                                 ('Ryan Gosling', 42, 2),

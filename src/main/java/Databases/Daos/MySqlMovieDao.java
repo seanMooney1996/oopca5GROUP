@@ -197,7 +197,7 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
             }
         }
 
-        return createdMovie; // returns null if there is a failure in creating the entry
+        return createdMovie;
     }
 
     @Override
@@ -244,7 +244,7 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
                 throw new DaoException("findAllUsers() " + e.getMessage());
             }
         }
-        return movieList;     // may be empty
+        return movieList;
     }
 
 
@@ -336,7 +336,7 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
                 throw new DaoException("findMovieByName() " + e.getMessage());
             }
         }
-        return movie;     // reference to User object, or null value
+        return movie;
     }
 
     @Override
@@ -347,15 +347,13 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
 
         int numberOfDeletedRows = -1;
         try {
-            //Get connection object using the getConnection() method inherited
-            // from the super class (MySqlDao.java)
+
             connection = this.getConnection();
 
             String query = "DELETE FROM MOVIES WHERE MOVIE_ID = ? ";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, id);
 
-            //Using a PreparedStatement to execute SQL...
             numberOfDeletedRows = preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
