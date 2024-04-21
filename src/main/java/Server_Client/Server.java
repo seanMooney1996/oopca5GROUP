@@ -113,31 +113,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
                 int spaceIndex = request.indexOf(' ');
                 String requestCommand = request.substring(0, spaceIndex);
                 System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + requestCommand);
-                switch (requestCommand) {
-                    case "getMovieByID":
-                        handleGetMovieByID(mySqlMovieDao,request);
-                        break;
-                    case "getAllMovies":
-                        handleGetAllMovies(mySqlMovieDao);
-                        break;
-                    case "getPosterList":
-                        handleGetPosterList();
-                        break;
-                    case "getPosterImage":
-                        handleGetPosterImage();
-                        break;
-                    case "addMovie":
-                        handleAddMovie(mySqlMovieDao,request);
-                        break;
-                    case "deleteMovie":
-                        handleDeleteMovie(mySqlMovieDao,request);
-                        break;
-                    case "quit":
-                        handleQuit();
-                        break;
-                    default:
-                        handleInvalidRequest();
-                }
+                switchMethod(requestCommand);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -145,6 +121,39 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
             closeResources();
         }
         System.out.println("Server: (ClientHandler): Handler for Client " + clientNumber + " is terminating .....");
+    }
+
+
+
+    private void switchMethod(String requestCommand) throws Exception {
+        MySqlMovieDao mySqlMovieDao = new MySqlMovieDao();
+        String request = null;
+
+        switch (requestCommand) {
+            case "getMovieByID":
+                handleGetMovieByID(mySqlMovieDao,request);
+                break;
+            case "getAllMovies":
+                handleGetAllMovies(mySqlMovieDao);
+                break;
+            case "getPosterList":
+                handleGetPosterList();
+                break;
+            case "getPosterImage":
+                handleGetPosterImage();
+                break;
+            case "addMovie":
+                handleAddMovie(mySqlMovieDao,request);
+                break;
+            case "deleteMovie":
+                handleDeleteMovie(mySqlMovieDao,request);
+                break;
+            case "quit":
+                handleQuit();
+                break;
+            default:
+                handleInvalidRequest();
+        }
     }
 
     private void handleGetMovieByID(MySqlMovieDao mySqlMovieDao,String request) throws IOException, DaoException {
@@ -155,9 +164,13 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
             String movieString = JsonConverter.convertSingleToJSON(movie);
             socketWriter.println(movieString);
             System.out.println("Server message: movie sent to client");
+            testHelper(true);
+
         } else {
             socketWriter.println("Error retrieving movie from DB");
             System.out.println("Server message: error retrieving movie from db");
+            testHelper(false);
+
         }
     }
 
@@ -167,9 +180,13 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
             String moviesJson = JsonConverter.converteAllMoviesToJSON(movieList);
             socketWriter.println(moviesJson);
             System.out.println("Server message: Sending all movies to client.");
+            testHelper(true);
+
         } else {
             socketWriter.println("Error getting movies");
             System.out.println("Server message: Error Sending all movies to client.");
+            testHelper(false);
+
         }
     }
 
@@ -188,6 +205,8 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
                 sendFile(fileToGet);
             } else {
                 socketWriter.println("Invalid request for file");
+                testHelper(false);
+
             }
     }
 
@@ -217,9 +236,13 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
         if (mySqlMovieDao.createMovie(movie) == null) {
             socketWriter.println("Movie not added to database");
             System.out.println("Server message: Error adding movie to DB.");
+            testHelper(false);
+
         } else {
             socketWriter.println("Movie added to database");
             System.out.println("Server message: Movie added to db.");
+            testHelper(true);
+
         }
     }
 
@@ -230,20 +253,26 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
         if (deletedRows == 0) {
             socketWriter.println("Error deleting from database");
             System.out.println("Server message: Error deleting Movie from database");
+            testHelper(false);
         } else {
             socketWriter.println("Movie Deleted from database");
             System.out.println("Server message: Movie deleted from database");
+            testHelper(true);
         }
     }
 
     private void handleQuit() {
         socketWriter.println("Sorry to see you leaving. Goodbye.");
         System.out.println("Server message: Client has notified us that it is quitting.");
+        testHelper(true);
+
     }
 
     private void handleInvalidRequest() {
         socketWriter.println("Error. I'm sorry I don't understand your request");
         System.out.println("Server message: Invalid request from client.");
+        testHelper(false);
+
     }
 
     private void closeResources() {
@@ -255,6 +284,20 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
             ex.printStackTrace();
         }
     }
+
+
+    private String testHelper(boolean methodWorks){
+        String message= "";
+        if(methodWorks){
+            message="Works.";
+        }else{
+            message="Doesn't work.";
+
+        }
+        return message;
+    }
+
+
 }
 
 

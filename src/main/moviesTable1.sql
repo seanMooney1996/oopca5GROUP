@@ -17,6 +17,8 @@ CREATE TABLE `movies` (
   PRIMARY KEY  (`MOVIE_ID`)
   );
 DROP TABLE IF EXISTS `actors`;
+
+
 CREATE TABLE actors (
                          ACTOR_ID INT(11) NOT NULL AUTO_INCREMENT,
                          ACTOR_NAME VARCHAR(255) NOT NULL,
