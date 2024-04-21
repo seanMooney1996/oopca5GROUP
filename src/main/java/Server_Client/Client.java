@@ -121,7 +121,7 @@ public class Client {
         return response;
     }
     private static void sendPosterRequest(PrintWriter out, BufferedReader in) throws Exception {
-        out.println("getPosterImage");
+        out.println("getPosterImage ");
         String response = in.readLine();
         System.out.println(response);
         Scanner input = new Scanner(System.in);

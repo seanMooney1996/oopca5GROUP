@@ -39,7 +39,7 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
                 movie = new Movie(movieId, movieName, directorName, genre, studio, year, boxOfficeGain);
             }
         } catch (SQLException e) {
-            throw new DaoException("findUserByUsernamePassword() " + e.getMessage());
+            throw new DaoException("findMovieById() " + e.getMessage());
         } finally {
             try {
                 if (resultSet != null) {
