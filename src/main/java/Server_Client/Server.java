@@ -113,7 +113,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
                 int spaceIndex = request.indexOf(' ');
                 String requestCommand = request.substring(0, spaceIndex);
                 System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + requestCommand);
-                switchMethod(requestCommand);
+                switchMethod(requestCommand, request);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -125,9 +125,8 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
 
 
 
-    private void switchMethod(String requestCommand) throws Exception {
+    private void switchMethod(String requestCommand, String request) throws Exception {
         MySqlMovieDao mySqlMovieDao = new MySqlMovieDao();
-        String request = null;
 
         switch (requestCommand) {
             case "getMovieByID":
