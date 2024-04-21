@@ -148,7 +148,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
     }
 
     private void handleGetMovieByID(MySqlMovieDao mySqlMovieDao,String request) throws IOException, DaoException {
-        int movieId = Integer.parseInt(request.substring(13));
+        int movieId = Integer.parseInt(request.substring(14));
         Movie movie = mySqlMovieDao.findMovieById(movieId);
 
         if (movie != null) {
