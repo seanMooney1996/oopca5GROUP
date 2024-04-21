@@ -157,7 +157,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
     }
 
     private void handleGetMovieByID(MySqlMovieDao mySqlMovieDao,String request) throws IOException, DaoException {
-        int movieId = Integer.parseInt(request.substring(13));
+        int movieId = Integer.parseInt(request.substring(14));
         Movie movie = mySqlMovieDao.findMovieById(movieId);
 
         if (movie != null) {
@@ -248,7 +248,7 @@ class ClientHandler implements Runnable   // each ClientHandler communicates wit
 
     private void handleDeleteMovie(MySqlMovieDao mySqlMovieDao, String request) throws IOException, DaoException {
         String message = "";
-        int movieId = Integer.parseInt(request.substring(12));
+        int movieId = Integer.parseInt(request.substring(13));
         int deletedRows = mySqlMovieDao.deleteMovie(movieId);
         if (deletedRows == 0) {
             socketWriter.println("Error deleting from database");

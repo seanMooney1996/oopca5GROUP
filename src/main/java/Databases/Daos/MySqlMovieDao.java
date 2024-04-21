@@ -64,7 +64,6 @@ public class MySqlMovieDao extends MySqlDao implements MovieDAOInterface {
         ResultSet resultSet = null;
         List<Movie> movieList = new ArrayList<>();
 
-
         try {
             connection = this.getConnection();
             String  query = "";

@@ -50,17 +50,17 @@ public class Client {
                 switch (choice) {
                     case 1: addMovie(out, in, consoleInput);
                         break;
-                    case 2: sendRequest(out,"getPosterList", in);
+                    case 2: sendRequest(out,"getPosterList ", in);
                         break;
                     case 3: sendPosterRequest(out, in);
                         break;
-                    case 4: sendRequestGetMovieById(out, "getMovieByID", in);
+                    case 4: sendRequestGetMovieById(out, "getMovieByID ", in);
                         break;
-                    case 5: sendRequest(out, "getAllMovies", in);
+                    case 5: sendRequest(out, "getAllMovies ", in);
                         break;
-                    case 6: deleteMovie(out, "deleteMovie", in);
+                    case 6: deleteMovie(out, "deleteMovie ", in);
                         break;
-                    case 7: sendRequest(out, "quit", in);
+                    case 7: sendRequest(out, "quit ", in);
                         System.out.println("Exiting client, but server may still be running.");
                         return;
                     default:
